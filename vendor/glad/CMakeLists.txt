@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.14)
+add_library(glad STATIC )
+target_sources(glad PRIVATE src/glad.c include/glad/glad.h include/KHR/khrplatform.h)
+target_link_libraries(RayTracing PUBLIC glad)
+target_include_directories(glad PUBLIC include)

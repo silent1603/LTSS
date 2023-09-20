@@ -10,3 +10,4 @@ if exist build\ (
 
 cd build
 cmake ..
+cd ..

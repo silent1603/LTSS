@@ -9,3 +9,4 @@ fi
 
 cd ./build
 cmake ..
+cd ..

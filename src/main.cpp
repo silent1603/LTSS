@@ -4,24 +4,96 @@
 #include "color.h"
 #include "math.h"
 
-int main() {
-
-    // Image
-
-    int image_width = 256;
-    int image_height = 256;
-
-    // Render
-
-    std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
-
-    for (int j = 0; j < image_height; ++j) {
-        std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
-        for (int i = 0; i < image_width; ++i) {
-            auto pixel_color = color(double(i)/(image_width-1), double(j)/(image_height-1), 0);
-            write_color(std::cout, pixel_color);
+#include <SDL2/SDL.h>
+#include <stdio.h>
+#include <time.h>
+#include <glm/glm.hpp>
+#include <imgui/imgui.h>
+#include <glad/glad.h>
+int log_events() {
+    SDL_Event event;
+    if (SDL_PollEvent(&event)) {  /* Loop until there are no events left on the queue */
+        switch (event.type) {  /* Process the appropiate event type */
+        case SDL_KEYDOWN:  /* Handle a KEYDOWN event */
+            printf("Key down %d\n", event.key.keysym.sym);
+            if (event.key.keysym.sym == SDLK_ESCAPE) {
+                return 0;
+            }
+            break;
+        case SDL_KEYUP:
+            printf("Key up: %d\n", event.key.keysym.sym);
+            break;
+        case SDL_MOUSEMOTION:
+            printf("Mouse motion\n");
+            break;
+        case SDL_QUIT:
+            printf("Quit\n");
+            return 0;
+        default: /* Report an unhandled event */
+            printf("Unknown Event: %d\n", event.type);
+            break;
         }
     }
+    return 1;
+}
 
-    std::clog << "\rDone.                 \n";
+int main(int argc, char* argv[]) {
+    SDL_Init(SDL_INIT_EVERYTHING);
+
+    SDL_Window* win = SDL_CreateWindow("Hello World!", 640, 480, 32, 0, SDL_WINDOW_SHOWN |SDL_WINDOW_RESIZABLE);
+
+    if (win == NULL) {
+        printf("Could not create window: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    SDL_Renderer* ren = SDL_CreateRenderer(win, -1, 0);
+    if (ren == NULL) {
+        printf("Could not create renderer: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    time_t start = time(NULL);
+
+    SDL_SetRenderDrawColor(ren, 0, 0, 0, 255);
+    SDL_RenderFillRect(ren, NULL);
+    SDL_RenderPresent(ren);
+
+    while (time(NULL) - start < 1) {
+        log_events();
+    }
+
+    SDL_SetRenderDrawColor(ren, 255, 0, 0, 255);
+    SDL_RenderFillRect(ren, NULL);
+    SDL_RenderPresent(ren);
+
+    while (time(NULL) - start < 2) {
+        log_events();
+    }
+
+    SDL_SetRenderDrawColor(ren, 0, 255, 0, 255);
+    SDL_RenderFillRect(ren, NULL);
+    SDL_RenderPresent(ren);
+
+    while (time(NULL) - start < 3) {
+        log_events();
+    }
+
+    SDL_SetRenderDrawColor(ren, 0, 0, 255, 255);
+    SDL_RenderFillRect(ren, NULL);
+    SDL_RenderPresent(ren);
+
+    while (time(NULL) - start < 4) {
+        log_events();
+    }
+
+    SDL_SetRenderDrawColor(ren, 255, 255, 255, 255);
+    SDL_RenderFillRect(ren, NULL);
+    SDL_RenderPresent(ren);
+
+    while (log_events()) {}
+
+    SDL_Quit();
+
+    return 0;
 }
