@@ -1,99 +1,24 @@
 #include <iostream>
-#include <thread>
+
 #include "openmp/omp.h"
-#include "color.h"
-#include "math.h"
+#include "Rtweekend.h"
 
-#include <SDL2/SDL.h>
-#include <stdio.h>
-#include <time.h>
-#include <glm/glm.hpp>
-#include <imgui/imgui.h>
-#include <glad/glad.h>
-int log_events() {
-    SDL_Event event;
-    if (SDL_PollEvent(&event)) {  /* Loop until there are no events left on the queue */
-        switch (event.type) {  /* Process the appropiate event type */
-        case SDL_KEYDOWN:  /* Handle a KEYDOWN event */
-            printf("Key down %d\n", event.key.keysym.sym);
-            if (event.key.keysym.sym == SDLK_ESCAPE) {
-                return 0;
-            }
-            break;
-        case SDL_KEYUP:
-            printf("Key up: %d\n", event.key.keysym.sym);
-            break;
-        case SDL_MOUSEMOTION:
-            printf("Mouse motion\n");
-            break;
-        case SDL_QUIT:
-            printf("Quit\n");
-            return 0;
-        default: /* Report an unhandled event */
-            printf("Unknown Event: %d\n", event.type);
-            break;
-        }
-    }
-    return 1;
-}
+#include "Camera.h"
+#include "Hittable_list.h"
+#include "Sphere.h"
 
-int main(int argc, char* argv[]) {
-    SDL_Init(SDL_INIT_EVERYTHING);
+int main(int argc , char** argv) {
 
-    SDL_Window* win = SDL_CreateWindow("Hello World!", 640, 480, 32, 0, SDL_WINDOW_SHOWN |SDL_WINDOW_RESIZABLE);
+    hittable_list world;
 
-    if (win == NULL) {
-        printf("Could not create window: %s\n", SDL_GetError());
-        return 1;
-    }
+    world.add(make_shared<sphere>(point3(0,0,-1), 0.5));
+    world.add(make_shared<sphere>(point3(0,-100.5,-1), 100));
 
-    SDL_Renderer* ren = SDL_CreateRenderer(win, -1, 0);
-    if (ren == NULL) {
-        printf("Could not create renderer: %s\n", SDL_GetError());
-        return 1;
-    }
+    camera cam;
 
-    time_t start = time(NULL);
-
-    SDL_SetRenderDrawColor(ren, 0, 0, 0, 255);
-    SDL_RenderFillRect(ren, NULL);
-    SDL_RenderPresent(ren);
-
-    while (time(NULL) - start < 1) {
-        log_events();
-    }
-
-    SDL_SetRenderDrawColor(ren, 255, 0, 0, 255);
-    SDL_RenderFillRect(ren, NULL);
-    SDL_RenderPresent(ren);
-
-    while (time(NULL) - start < 2) {
-        log_events();
-    }
-
-    SDL_SetRenderDrawColor(ren, 0, 255, 0, 255);
-    SDL_RenderFillRect(ren, NULL);
-    SDL_RenderPresent(ren);
-
-    while (time(NULL) - start < 3) {
-        log_events();
-    }
-
-    SDL_SetRenderDrawColor(ren, 0, 0, 255, 255);
-    SDL_RenderFillRect(ren, NULL);
-    SDL_RenderPresent(ren);
-
-    while (time(NULL) - start < 4) {
-        log_events();
-    }
-
-    SDL_SetRenderDrawColor(ren, 255, 255, 255, 255);
-    SDL_RenderFillRect(ren, NULL);
-    SDL_RenderPresent(ren);
-
-    while (log_events()) {}
-
-    SDL_Quit();
-
-    return 0;
+    cam.aspect_ratio = 16.0 / 9.0;
+    cam.image_width  = 400;
+    cam.samples_per_pixel = 100;
+    
+    cam.render(world);
 }

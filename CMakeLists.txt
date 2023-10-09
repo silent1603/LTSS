@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.14)
 project(RayTracing VERSION 1.0 DESCRIPTION "parallel programming" LANGUAGES C CXX)
 add_executable(RayTracing)
 set(CMAKE_DEBUG_POSTFIX d)
-add_subdirectory(${CMAKE_SOURCE_DIR}/Examples)
 add_subdirectory(${CMAKE_SOURCE_DIR}/vendor)
 
 target_sources(RayTracing PUBLIC ${CMAKE_SOURCE_DIR}/src/main.cpp)
