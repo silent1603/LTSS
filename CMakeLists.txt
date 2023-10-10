@@ -7,10 +7,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/vendor)
 
 target_sources(RayTracing PUBLIC ${CMAKE_SOURCE_DIR}/src/main.cpp)
 
-
-
 target_include_directories(RayTracing PUBLIC ${CMAKE_SOURCE_DIR}/vendor )
-target_link_directories(RayTracing PUBLIC  ${CMAKE_SOURCE_DIR}/lib)
 target_compile_features(RayTracing PRIVATE cxx_std_17)
 
 if (MSVC)
@@ -22,7 +19,7 @@ endif()
 
 set_target_properties( RayTracing
     PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib"
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib"
+    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin"
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin"
 )
