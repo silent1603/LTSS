@@ -1,6 +1,7 @@
 if [ "./bin/image.ppm" ] 
 then
-    echo "image exists." 
+    rm -f ./bin/image.ppm
+    touch ./bin/image.ppm
 else
     touch ./bin/image.ppm
 fi
