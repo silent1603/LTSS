@@ -7,7 +7,11 @@
 #include "Hittable.h"
 #include "Material.h"
 #include <iostream>
-
+#if _MSC_VER && !__INTEL_COMPILER
+    #include <omp.h>
+#else 
+    #include "openmp/omp.h"
+#endif
 class camera {
   public:
     double aspect_ratio = 1.0;  // Ratio of image width over height
@@ -23,6 +27,32 @@ class camera {
     double defocus_angle = 0;  // Variation angle of rays through each pixel
     double focus_dist = 10;    // Distance from camera lookfrom point to plane of perfect focus
 
+    void renderParallel(const hittable& world)
+    {
+        initialize();
+
+        std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+
+        #pragma omp parallel for
+        for (int j = 0; j < image_height; ++j) {
+            #pragma omp single nowait
+            std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
+            for (int i = 0; i < image_width; ++i) {
+                color pixel_color(0,0,0);
+                #pragma omp parallel for
+                for (int sample = 0; sample < samples_per_pixel; ++sample) {
+                    ray r = get_ray(i, j);
+                    pixel_color += ray_color(r, max_depth, world);
+                }
+                #pragma omp critical
+                {
+                    write_color(std::cout, pixel_color, samples_per_pixel);
+                }
+            }
+        }
+
+        std::clog << "\rDone.                 \n";
+    }
 
     void render(const hittable& world) {
         initialize();

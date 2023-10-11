@@ -1,14 +1,34 @@
 #include <iostream>
+#include <string>
+#include <chrono>
 
-#include "openmp/omp.h"
 #include "Rtweekend.h"
 #include "color.h"
 #include "Camera.h"
 #include "Hittable_list.h"
 #include "Material.h"
 #include "Sphere.h"
-
+#if _MSC_VER && !__INTEL_COMPILER
+    #include <omp.h>
+#else 
+    #include "openmp/omp.h"
+#endif
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 int main() {
+    
+    bool isUsingThread = false;
+    uint32_t numberThreadAvailable = omp_get_num_procs();
+    std::string input;
+    std::cout << "Use Mutli Thread(y,n) :" ;
+    std::cin >> input;
+    isUsingThread = (input.compare("y") == 0);
+
+    int usedThread;
+    std::cout << "Has " << numberThreadAvailable << " thread available, How Many Threads Do You Need : ";
+    std::cin >> usedThread;
+    omp_set_num_threads(usedThread);
+
     hittable_list world;
 
     auto ground_material = make_shared<lambertian>(color(0.5, 0.5, 0.5));
@@ -65,6 +85,24 @@ int main() {
 
     cam.defocus_angle = 0.6;
     cam.focus_dist    = 10.0;
-
-    cam.render(world);
+    auto start = std::chrono::steady_clock::now();
+    if(isUsingThread)
+    {
+        cam.renderParallel(world);
+    }
+    else
+    {
+        cam.render(world);
+    }
+    auto end = std::chrono::steady_clock::now();
+    if(isUsingThread)
+    {
+        std::cout << "Total time using "<< usedThread <<"Thread ." ;
+    }
+    else
+    {
+        std::cout << "Total time with no thread ." ;
+    }
+    std::cout << "Elapsed time in microseconds: " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
+    return 0;
 }
