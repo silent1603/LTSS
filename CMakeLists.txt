@@ -9,14 +9,12 @@ target_sources(RayTracing PUBLIC ${CMAKE_SOURCE_DIR}/src/main.cpp)
 target_compile_features(RayTracing PRIVATE cxx_std_17)
 
 if (MSVC)
-set_property(DIRECTORY ${CMAKE_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT RayTracing)
-set_property(TARGET RayTracing PROPERTY VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
-set_target_properties(RayTracing PROPERTIES  RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/bin)
-target_include_directories(RayTracing PUBLIC ${CMAKE_SOURCE_DIR}/vendor/stb )
+    set_property(DIRECTORY ${CMAKE_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT RayTracing)
+    set_property(TARGET RayTracing PROPERTY VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+    set_target_properties(RayTracing PROPERTIES  RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/bin)
 else()
     add_subdirectory(${CMAKE_SOURCE_DIR}/vendor)
     target_include_directories(RayTracing PUBLIC ${CMAKE_SOURCE_DIR}/vendor )
-    target_include_directories(RayTracing PUBLIC ${CMAKE_SOURCE_DIR}/vendor/stb )
 endif()
 
 

@@ -13,19 +13,18 @@
 #else 
     #include "openmp/omp.h"
 #endif
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+
 int main() {
     
     bool isUsingThread = false;
     uint32_t numberThreadAvailable = omp_get_num_procs();
     std::string input;
-    std::cout << "Use Mutli Thread(y,n) :" ;
+    std::clog << "Use Mutli Thread(y,n) :" ;
     std::cin >> input;
     isUsingThread = (input.compare("y") == 0);
 
     int usedThread;
-    std::cout << "Has " << numberThreadAvailable << " thread available, How Many Threads Do You Need : ";
+    std::clog << "Has " << numberThreadAvailable << " thread available, How Many Threads Do You Need : ";
     std::cin >> usedThread;
     omp_set_num_threads(usedThread);
 
@@ -97,12 +96,12 @@ int main() {
     auto end = std::chrono::steady_clock::now();
     if(isUsingThread)
     {
-        std::cout << "Total time using "<< usedThread <<"Thread ." ;
+        std::clog << "Total time using "<< usedThread <<"Thread ." ;
     }
     else
     {
-        std::cout << "Total time with no thread ." ;
+        std::clog << "Total time with no thread ." ;
     }
-    std::cout << "Elapsed time in microseconds: " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
+    std::clog << "Elapsed time in microseconds: " << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() << " µs" << std::endl;
     return 0;
 }
