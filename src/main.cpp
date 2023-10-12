@@ -22,11 +22,15 @@ int main() {
     std::clog << "Use Mutli Thread(y,n) :" ;
     std::cin >> input;
     isUsingThread = (input.compare("y") == 0);
+    int usedThread = 1;
+    if(isUsingThread)
+    {
+        
+        std::clog << "Has " << numberThreadAvailable << " thread available, How Many Threads Do You Need : ";
+        std::cin >> usedThread;
+        omp_set_num_threads(usedThread);
+    }
 
-    int usedThread;
-    std::clog << "Has " << numberThreadAvailable << " thread available, How Many Threads Do You Need : ";
-    std::cin >> usedThread;
-    omp_set_num_threads(usedThread);
 
     hittable_list world;
 
