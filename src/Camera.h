@@ -102,8 +102,8 @@ class camera {
         v = cross(w, u);
 
         // Calculate the vectors across the horizontal and down the vertical viewport edges.
-        auto viewport_u = vec3(viewport_width, 0, 0);
-        auto viewport_v = vec3(0, -viewport_height, 0);
+        vec3 viewport_u = viewport_width * u;    // Vector across viewport horizontal edge
+        vec3 viewport_v = viewport_height * -v;  // Vector down viewport vertical edge
 
         // Calculate the horizontal and vertical delta vectors from pixel to pixel.
         pixel_delta_u = viewport_u / image_width;
@@ -138,6 +138,12 @@ class camera {
         auto px = -0.5 + random_double();
         auto py = -0.5 + random_double();
         return (px * pixel_delta_u) + (py * pixel_delta_v);
+    }
+
+    vec3 pixel_sample_disk(double radius) const {
+        // Generate a sample from the disk of given radius around a pixel at the origin.
+        auto p = radius * random_in_unit_disk();
+        return (p[0] * pixel_delta_u) + (p[1] * pixel_delta_v);
     }
 
     point3 defocus_disk_sample() const {
