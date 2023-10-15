@@ -1,6 +1,3 @@
-if [ "./bin/image.ppm" ] 
-then
-    rm -f ./bin/image.ppm
-fi
+rm -f ./bin/image.ppm
 touch ./bin/image.ppm
 ./bin/RayTracing >> ./bin/image.ppm
