@@ -7,11 +7,8 @@
 #include "Hittable.h"
 #include "Material.h"
 #include <iostream>
-#if _MSC_VER && !__INTEL_COMPILER
-    #include <omp.h>
-#else 
-    #include "openmp/omp.h"
-#endif
+#include <omp.h>
+
 class camera {
   public:
     double aspect_ratio = 1.0;  // Ratio of image width over height
@@ -29,13 +26,13 @@ class camera {
 
     void renderParallel(const hittable& world)
     {
+        
         initialize();
 
         std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 
         #pragma omp parallel for
         for (int j = 0; j < image_height; ++j) {
-            #pragma omp single nowait
             std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
             for (int i = 0; i < image_width; ++i) {
                 color pixel_color(0,0,0);
@@ -55,7 +52,10 @@ class camera {
     }
 
     void render(const hittable& world) {
+        auto sequence_start = std::chrono::steady_clock::now();
         initialize();
+        auto sequence_end = std::chrono::steady_clock::now();
+        std::clog << "Elapsed init sequence time in microseconds: " << std::chrono::duration_cast<std::chrono::microseconds>(sequence_end - sequence_start).count() << " µs" << std::endl;
 
         std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 

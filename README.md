@@ -6,6 +6,8 @@
 
 - GCC / CLANG complier
 
+- OpenMP 
+
 ## How to build project using script
 
 - Window: Build.bat
