@@ -13,6 +13,7 @@
 
 int main() {
     auto sequence_start = std::chrono::steady_clock::now();
+    auto start = std::chrono::steady_clock::now();
     bool isUsingThread = false;
     uint32_t numberThreadAvailable = omp_get_num_procs();
     std::string input;
@@ -85,9 +86,9 @@ int main() {
 
     cam.defocus_angle = 0.6;
     cam.focus_dist    = 10.0;
-    auto sequence_end = std::chrono::steady_clock::now();
-    std::clog << "Elapsed sequence time in microseconds: " << std::chrono::duration_cast<std::chrono::microseconds>(sequence_end - sequence_start).count() << " µs \n";
-    auto start = std::chrono::steady_clock::now();
+    //auto sequence_end = std::chrono::steady_clock::now();
+    //std::clog << "Elapsed sequence time in microseconds: " << std::chrono::duration_cast<std::chrono::microseconds>(sequence_end - sequence_start).count() << " µs \n";
+
     if(isUsingThread)
     {
         cam.renderParallel(world);
